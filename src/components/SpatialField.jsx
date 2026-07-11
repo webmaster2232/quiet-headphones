@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { gsap, useGSAP } from '../lib/motion.js'
+import { shouldReduceMotion } from '../lib/motionPreference.js'
 
 const SpatialGlobe = lazy(() => import('./ui/SpatialGlobe.jsx'))
 
@@ -17,7 +18,7 @@ export default function SpatialField() {
   const [fieldVisible, setFieldVisible] = useState(false)
 
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
+    if (shouldReduceMotion()) return undefined
 
     const section = sectionRef.current
     if (!section) return undefined
@@ -46,7 +47,8 @@ export default function SpatialField() {
           reduced: '(prefers-reduced-motion: reduce)',
         },
         (context) => {
-          const { desktop, reduced } = context.conditions
+          const { desktop } = context.conditions
+          const reduced = shouldReduceMotion()
 
           if (!desktop || reduced) {
             gsap.set(

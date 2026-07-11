@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from '../lib/motion.js'
+import { shouldReduceMotion } from '../lib/motionPreference.js'
 
 export default function CustomCursor() {
   const ringRef = useRef(null)
@@ -7,7 +8,9 @@ export default function CustomCursor() {
 
   useEffect(() => {
     const finePointer = window.matchMedia('(pointer: fine)').matches
-    if (!finePointer || !ringRef.current || !dotRef.current) return undefined
+    if (shouldReduceMotion() || !finePointer || !ringRef.current || !dotRef.current) {
+      return undefined
+    }
 
     const ringX = gsap.quickTo(ringRef.current, 'x', { duration: 0.38, ease: 'power3' })
     const ringY = gsap.quickTo(ringRef.current, 'y', { duration: 0.38, ease: 'power3' })

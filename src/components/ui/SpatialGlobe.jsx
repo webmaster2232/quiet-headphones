@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import createGlobe from 'cobe'
+import { shouldReduceMotion } from '../../lib/motionPreference.js'
 
 const soundMarkers = [
   { id: 'voice', location: [8, -8], label: 'Voice / near', labelled: true },
@@ -69,7 +70,7 @@ export default function SpatialGlobe({ active = true, mode = 'focus' }) {
 
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
+    if (!canvas || shouldReduceMotion()) return undefined
 
     let globe
     let frame = 0

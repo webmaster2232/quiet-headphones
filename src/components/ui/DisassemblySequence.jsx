@@ -1,4 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+import { shouldReduceMotion } from '../../lib/motionPreference.js'
 
 const SOURCE_WIDTH = 1672
 const SOURCE_HEIGHT = 941
@@ -76,17 +77,20 @@ const DisassemblySequence = forwardRef(function DisassemblySequence(_, forwarded
   const progressRef = useRef(0)
   const frameRef = useRef(0)
   const dimensionsRef = useRef({ width: 1, height: 1 })
-  const [canAnimate, setCanAnimate] = useState(() =>
-    window.matchMedia('(min-width: 800px) and (prefers-reduced-motion: no-preference)').matches,
+  const [canAnimate, setCanAnimate] = useState(
+    () => window.matchMedia('(min-width: 800px)').matches && !shouldReduceMotion(),
   )
 
   useEffect(() => {
-    const media = window.matchMedia(
-      '(min-width: 800px) and (prefers-reduced-motion: no-preference)',
-    )
-    const update = (event) => setCanAnimate(event.matches)
-    media.addEventListener('change', update)
-    return () => media.removeEventListener('change', update)
+    const widthMedia = window.matchMedia('(min-width: 800px)')
+    const motionMedia = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => setCanAnimate(widthMedia.matches && !shouldReduceMotion())
+    widthMedia.addEventListener('change', update)
+    motionMedia.addEventListener('change', update)
+    return () => {
+      widthMedia.removeEventListener('change', update)
+      motionMedia.removeEventListener('change', update)
+    }
   }, [])
 
   const draw = () => {

@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { gsap, useGSAP } from '../lib/motion.js'
+import { shouldReduceMotion } from '../lib/motionPreference.js'
 import AnimatedTextCycle from './ui/AnimatedTextCycle.jsx'
 
 const heroWords = ['Quiet,', 'Focused,', 'Aware,', 'Spatial,']
@@ -25,7 +26,8 @@ export default function Hero() {
           reduced: '(prefers-reduced-motion: reduce)',
         },
         (context) => {
-          const { desktop, reduced } = context.conditions
+          const { desktop } = context.conditions
+          const reduced = shouldReduceMotion()
 
           if (reduced) {
             gsap.set('.hero-line-inner, .hero-product, .hero-meta', {
@@ -64,18 +66,22 @@ export default function Hero() {
                 scrollTrigger: {
                   trigger: sectionRef.current,
                   start: 'top top',
-                  end: 'bottom top',
-                  scrub: true,
+                  end: '+=85%',
+                  pin: true,
+                  scrub: 0.5,
+                  anticipatePin: 1,
+                  invalidateOnRefresh: true,
                 },
               })
-              .to('.hero-line--one', { xPercent: -9, ease: 'none' }, 0)
-              .to('.hero-line--two', { xPercent: 7, ease: 'none' }, 0)
+              .to('.hero-line--one', { xPercent: -23, ease: 'none' }, 0)
+              .to('.hero-line--two', { xPercent: 17, ease: 'none' }, 0)
               .to(
                 '.hero-product',
-                { yPercent: 21, scale: 1.08, rotate: 5, ease: 'none' },
+                { yPercent: 34, scale: 1.2, rotate: 8, ease: 'none' },
                 0,
               )
-              .to('.hero-meta', { autoAlpha: 0, y: -24, ease: 'none' }, 0)
+              .to('.hero-meta', { autoAlpha: 0, y: -38, ease: 'none' }, 0)
+              .to('.hero-title', { scale: 0.94, transformOrigin: 'center top', ease: 'none' }, 0)
           }
         },
       )

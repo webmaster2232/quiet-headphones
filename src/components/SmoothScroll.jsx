@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ReactLenis, useLenis } from 'lenis/react'
 import { gsap, ScrollTrigger } from '../lib/motion.js'
+import { shouldReduceMotion } from '../lib/motionPreference.js'
 
 function ScrollTriggerSync() {
   const sync = useCallback(() => ScrollTrigger.update(), [])
@@ -18,13 +19,11 @@ function ScrollTriggerSync() {
 
 export default function SmoothScroll({ children }) {
   const lenisRef = useRef(null)
-  const [reducedMotion, setReducedMotion] = useState(
-    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  )
+  const [reducedMotion, setReducedMotion] = useState(shouldReduceMotion)
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const onChange = (event) => setReducedMotion(event.matches)
+    const onChange = () => setReducedMotion(shouldReduceMotion())
     media.addEventListener('change', onChange)
     return () => media.removeEventListener('change', onChange)
   }, [])
@@ -48,8 +47,7 @@ export default function SmoothScroll({ children }) {
       options={{
         autoRaf: false,
         anchors: { offset: 0 },
-        duration: reducedMotion ? 0 : 1.15,
-        lerp: reducedMotion ? 1 : 0.09,
+        lerp: reducedMotion ? 1 : 0.068,
         smoothWheel: !reducedMotion,
         syncTouch: false,
       }}

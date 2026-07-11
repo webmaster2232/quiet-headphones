@@ -1,4 +1,5 @@
 import { useLenis } from 'lenis/react'
+import { shouldReduceMotion } from '../lib/motionPreference.js'
 
 function ArrowIcon() {
   return (
@@ -17,7 +18,7 @@ export default function Header({ onReserve }) {
     const target = document.querySelector(selector)
     if (!target) return
 
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reducedMotion = shouldReduceMotion()
     const offset = window.innerHeight * offsetScreens
 
     if (lenis) {

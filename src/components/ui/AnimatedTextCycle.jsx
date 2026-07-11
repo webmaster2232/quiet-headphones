@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
+import { shouldReduceMotion } from '../../lib/motionPreference.js'
 
 const wordVariants = {
   hidden: { y: '-55%', opacity: 0, filter: 'blur(10px)' },
@@ -25,7 +26,7 @@ export default function AnimatedTextCycle({ words, interval = 3200, className = 
   const [currentIndex, setCurrentIndex] = useState(0)
   const [width, setWidth] = useState('auto')
   const measureRef = useRef(null)
-  const prefersReducedMotion = useReducedMotion()
+  const prefersReducedMotion = shouldReduceMotion()
   const safeWords = words?.length ? words : ['']
 
   useLayoutEffect(() => {

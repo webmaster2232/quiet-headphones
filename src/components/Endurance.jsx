@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { gsap, useGSAP } from '../lib/motion.js'
+import { shouldReduceMotion } from '../lib/motionPreference.js'
 
 const specs = [
   ['Driver', '40 mm'],
@@ -29,7 +30,8 @@ export default function Endurance({ onReserve }) {
           reduced: '(prefers-reduced-motion: reduce)',
         },
         (context) => {
-          const { desktop, reduced } = context.conditions
+          const { desktop } = context.conditions
+          const reduced = shouldReduceMotion()
           if (reduced) return
 
           const counter = { value: 0 }

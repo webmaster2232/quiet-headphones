@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { gsap, useGSAP } from '../lib/motion.js'
+import { shouldReduceMotion } from '../lib/motionPreference.js'
 import DisassemblySequence from './ui/DisassemblySequence.jsx'
 
 const callouts = [
@@ -49,7 +50,8 @@ export default function ObjectStudy() {
           reduced: '(prefers-reduced-motion: reduce)',
         },
         (context) => {
-          const { desktop, reduced } = context.conditions
+          const { desktop } = context.conditions
+          const reduced = shouldReduceMotion()
 
           if (!desktop || reduced) {
             gsap.set(
