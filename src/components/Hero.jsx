@@ -115,8 +115,8 @@ export default function Hero() {
       />
 
       <div className="hero-meta hero-chapter mono">01 / The object</div>
-      <a className="hero-meta hero-scroll mono" href="#object">
-        <span>Scroll to disassemble</span>
+      <a className="hero-meta hero-scroll mono" href="/design">
+        <span>Explore the design</span>
         <DownArrow />
       </a>
     </section>

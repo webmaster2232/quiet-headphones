@@ -1,5 +1,4 @@
-import { useLenis } from 'lenis/react'
-import { shouldReduceMotion } from '../lib/motionPreference.js'
+import { NavLink } from 'react-router-dom'
 
 function ArrowIcon() {
   return (
@@ -10,41 +9,15 @@ function ArrowIcon() {
 }
 
 export default function Header({ onReserve }) {
-  const lenis = useLenis()
-
-  const scrollToChapter = (event, selector, offsetScreens = 0) => {
-    event.preventDefault()
-    event.stopPropagation()
-    const target = document.querySelector(selector)
-    if (!target) return
-
-    const reducedMotion = shouldReduceMotion()
-    const offset = window.innerHeight * offsetScreens
-
-    if (lenis) {
-      lenis.scrollTo(target, {
-        offset,
-        duration: reducedMotion ? 0 : 1.25,
-        immediate: reducedMotion,
-      })
-      return
-    }
-
-    window.scrollTo({
-      top: target.getBoundingClientRect().top + window.scrollY + offset,
-      behavior: reducedMotion ? 'auto' : 'smooth',
-    })
-  }
-
   return (
     <header className="site-header">
-      <a className="wordmark" href="#top" aria-label="FORM/01 home">
+      <NavLink className="wordmark" to="/" aria-label="FORM/01 home">
         FORM/01
-      </a>
+      </NavLink>
       <nav className="primary-nav" aria-label="Primary navigation">
-        <a href="#object" onClick={(event) => scrollToChapter(event, '#object', 1.65)}>Object</a>
-        <a href="#sound" onClick={(event) => scrollToChapter(event, '#sound', 1.15)}>Sound</a>
-        <a href="#specs" onClick={(event) => scrollToChapter(event, '#specs')}>Specs</a>
+        <NavLink to="/design">Design</NavLink>
+        <NavLink to="/sound">Sound</NavLink>
+        <NavLink to="/specs">Specs</NavLink>
       </nav>
       <button className="reserve-button" type="button" onClick={onReserve}>
         <span>Reserve — $480</span>

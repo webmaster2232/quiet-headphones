@@ -1,36 +1,34 @@
 import { useState } from 'react'
 import CustomCursor from './components/CustomCursor.jsx'
-import Endurance from './components/Endurance.jsx'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Header from './components/Header.jsx'
-import Hero from './components/Hero.jsx'
 import MotionPreference from './components/MotionPreference.jsx'
-import ObjectStudy from './components/ObjectStudy.jsx'
+import PageTransition from './components/PageTransition.jsx'
 import ReservationDrawer from './components/ReservationDrawer.jsx'
-import ScrollKinetics from './components/ScrollKinetics.jsx'
-import ScrollProgress from './components/ScrollProgress.jsx'
 import SmoothScroll from './components/SmoothScroll.jsx'
-import SpatialField from './components/SpatialField.jsx'
+import HomePage from './pages/HomePage.jsx'
+import DesignPage from './pages/DesignPage.jsx'
+import SoundPage from './pages/SoundPage.jsx'
+import SpecsPage from './pages/SpecsPage.jsx'
 
 export default function App() {
   const [reservationOpen, setReservationOpen] = useState(false)
 
   return (
-    <SmoothScroll>
+    <BrowserRouter><SmoothScroll>
       <CustomCursor />
-      <ScrollProgress />
-      <ScrollKinetics />
       <MotionPreference />
       <Header onReserve={() => setReservationOpen(true)} />
-      <main>
-        <Hero />
-        <ObjectStudy />
-        <SpatialField />
-        <Endurance onReserve={() => setReservationOpen(true)} />
-      </main>
+      <PageTransition><Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/design" element={<DesignPage />} />
+        <Route path="/sound" element={<SoundPage />} />
+        <Route path="/specs" element={<SpecsPage onReserve={() => setReservationOpen(true)} />} />
+      </Routes></PageTransition>
       <ReservationDrawer
         open={reservationOpen}
         onClose={() => setReservationOpen(false)}
       />
-    </SmoothScroll>
+    </SmoothScroll></BrowserRouter>
   )
 }

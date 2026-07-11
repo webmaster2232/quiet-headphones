@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { gsap, useGSAP } from '../lib/motion.js'
 import { shouldReduceMotion } from '../lib/motionPreference.js'
-import DisassemblySequence from './ui/DisassemblySequence.jsx'
+import DisassemblyVideo from './ui/DisassemblyVideo.jsx'
 
 const callouts = [
   {
@@ -127,7 +127,7 @@ export default function ObjectStudy() {
         </h2>
 
         <div className="object-product-wrap">
-          <DisassemblySequence ref={sequenceRef} />
+          <DisassemblyVideo ref={sequenceRef} />
         </div>
 
         <div className="object-callouts">
