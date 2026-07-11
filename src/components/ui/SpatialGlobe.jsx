@@ -23,13 +23,16 @@ export default function SpatialGlobe({ active = true, mode = 'focus' }) {
   const pointerRef = useRef(null)
   const dragRef = useRef({ phi: 0, theta: 0 })
   const settledRef = useRef({ phi: 0, theta: 0 })
+  const wakeRef = useRef(() => {})
 
   useEffect(() => {
     activeRef.current = active
+    wakeRef.current()
   }, [active])
 
   useEffect(() => {
     modeRef.current = mode
+    wakeRef.current()
   }, [mode])
 
   const endDrag = useCallback(() => {
@@ -40,6 +43,7 @@ export default function SpatialGlobe({ active = true, mode = 'focus' }) {
     pointerRef.current = null
     dragRef.current = { phi: 0, theta: 0 }
     canvasRef.current?.classList.remove('is-dragging')
+    wakeRef.current()
   }, [])
 
   useEffect(() => {
@@ -49,6 +53,7 @@ export default function SpatialGlobe({ active = true, mode = 'focus' }) {
         phi: (event.clientX - pointerRef.current.x) / 220,
         theta: (event.clientY - pointerRef.current.y) / 520,
       }
+      wakeRef.current()
     }
 
     window.addEventListener('pointermove', move, { passive: true })
@@ -78,15 +83,18 @@ export default function SpatialGlobe({ active = true, mode = 'focus' }) {
 
     const observer = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting
+      if (visible) wakeRef.current()
     })
     observer.observe(canvas)
 
     const resizeObserver = new ResizeObserver(([entry]) => {
       width = Math.round(entry.contentRect.width)
+      wakeRef.current()
     })
     resizeObserver.observe(canvas)
 
     const initialise = () => {
+      frame = 0
       if (!width) {
         frame = window.requestAnimationFrame(initialise)
         return
@@ -123,6 +131,7 @@ export default function SpatialGlobe({ active = true, mode = 'focus' }) {
       canvas.classList.add('is-ready')
 
       const animate = (time) => {
+        frame = 0
         const frameScale = Math.min(3, (time - previousTime) / (1000 / 60))
         previousTime = time
 
@@ -155,10 +164,17 @@ export default function SpatialGlobe({ active = true, mode = 'focus' }) {
           }
         }
 
-        frame = window.requestAnimationFrame(animate)
+        if (visible && (activeRef.current || pointerRef.current)) {
+          frame = window.requestAnimationFrame(animate)
+        }
       }
 
-      frame = window.requestAnimationFrame(animate)
+      wakeRef.current = () => {
+        if (frame || !globe || !visible) return
+        previousTime = performance.now()
+        frame = window.requestAnimationFrame(animate)
+      }
+      wakeRef.current()
     }
 
     initialise()
@@ -166,6 +182,7 @@ export default function SpatialGlobe({ active = true, mode = 'focus' }) {
     return () => {
       observer.disconnect()
       resizeObserver.disconnect()
+      wakeRef.current = () => {}
       window.cancelAnimationFrame(frame)
       globe?.destroy()
 
@@ -183,6 +200,7 @@ export default function SpatialGlobe({ active = true, mode = 'focus' }) {
   const handlePointerDown = (event) => {
     pointerRef.current = { x: event.clientX, y: event.clientY }
     canvasRef.current?.classList.add('is-dragging')
+    wakeRef.current()
   }
 
   const handleKeyDown = (event) => {
@@ -193,6 +211,7 @@ export default function SpatialGlobe({ active = true, mode = 'focus' }) {
     else if (event.key === 'ArrowDown') settledRef.current.theta += amount
     else return
     event.preventDefault()
+    wakeRef.current()
   }
 
   return (

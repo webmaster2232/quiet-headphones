@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 
 const SOURCE_WIDTH = 1672
 const SOURCE_HEIGHT = 941
@@ -76,6 +76,18 @@ const DisassemblySequence = forwardRef(function DisassemblySequence(_, forwarded
   const progressRef = useRef(0)
   const frameRef = useRef(0)
   const dimensionsRef = useRef({ width: 1, height: 1 })
+  const [canAnimate, setCanAnimate] = useState(() =>
+    window.matchMedia('(min-width: 800px) and (prefers-reduced-motion: no-preference)').matches,
+  )
+
+  useEffect(() => {
+    const media = window.matchMedia(
+      '(min-width: 800px) and (prefers-reduced-motion: no-preference)',
+    )
+    const update = (event) => setCanAnimate(event.matches)
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
 
   const draw = () => {
     frameRef.current = 0
@@ -167,9 +179,11 @@ const DisassemblySequence = forwardRef(function DisassemblySequence(_, forwarded
 
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas) return undefined
+    if (!canvas || !canAnimate) return undefined
 
     let cancelled = false
+    let idleId = 0
+    let fallbackTimer = 0
     const observer = new ResizeObserver(([entry]) => {
       const width = Math.max(1, entry.contentRect.width)
       const height = Math.max(1, entry.contentRect.height)
@@ -182,27 +196,37 @@ const DisassemblySequence = forwardRef(function DisassemblySequence(_, forwarded
 
     observer.observe(canvas)
 
-    Promise.all([
-      loadImage('/assets/form01-hero-cutout.png'),
-      loadImage('/assets/form01-exploded.webp'),
-    ])
-      .then(([assembled, exploded]) => {
-        if (cancelled) return
-        assembledRef.current = assembled
-        explodedRef.current = removePaperBackground(exploded)
-        canvas.classList.add('is-ready')
-        requestDraw()
-      })
-      .catch(() => {
-        canvas.classList.add('has-error')
-      })
+    const prepareSequence = () => {
+      Promise.all([
+        loadImage('/assets/form01-hero-cutout.png'),
+        loadImage('/assets/form01-exploded.webp'),
+      ])
+        .then(([assembled, exploded]) => {
+          if (cancelled) return
+          assembledRef.current = assembled
+          explodedRef.current = removePaperBackground(exploded)
+          canvas.classList.add('is-ready')
+          requestDraw()
+        })
+        .catch(() => {
+          canvas.classList.add('has-error')
+        })
+    }
+
+    if ('requestIdleCallback' in window) {
+      idleId = window.requestIdleCallback(prepareSequence, { timeout: 1200 })
+    } else {
+      fallbackTimer = window.setTimeout(prepareSequence, 240)
+    }
 
     return () => {
       cancelled = true
       observer.disconnect()
+      if (idleId) window.cancelIdleCallback(idleId)
+      if (fallbackTimer) window.clearTimeout(fallbackTimer)
       if (frameRef.current) window.cancelAnimationFrame(frameRef.current)
     }
-  }, [])
+  }, [canAnimate])
 
   return (
     <div className="disassembly-sequence">
@@ -211,6 +235,13 @@ const DisassemblySequence = forwardRef(function DisassemblySequence(_, forwarded
         className="disassembly-canvas"
         role="img"
         aria-label="FORM/01 headphones separating into the headband, cushions, drivers, frames, and outer shells as the page scrolls"
+      />
+      <img
+        className="disassembly-loading"
+        src="/assets/form01-hero-cutout.png"
+        alt=""
+        width="1586"
+        height="992"
       />
       <img
         className="disassembly-fallback"
