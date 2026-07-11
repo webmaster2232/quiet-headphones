@@ -1,0 +1,27 @@
+{
+  "name": "form01-headphones",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "@fontsource-variable/archivo": "latest",
+    "@fontsource-variable/archivo-narrow": "^5.2.8",
+    "@fontsource/ibm-plex-mono": "latest",
+    "@gsap/react": "latest",
+    "cobe": "2.0.1",
+    "gsap": "latest",
+    "lenis": "latest",
+    "motion": "12.42.2",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "latest",
+    "vite": "latest"
+  }
+}
