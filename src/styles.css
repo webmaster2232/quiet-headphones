@@ -558,11 +558,11 @@ label {
 .object-heading {
   position: absolute;
   z-index: 4;
-  top: calc(var(--header-height) + 3rem);
+  top: calc(var(--header-height) + 4.75rem);
   left: 3vw;
   margin: 0;
   font-family: 'Archivo Narrow Variable', 'Arial Narrow', sans-serif;
-  font-size: clamp(4rem, 8vw, 9.6rem);
+  font-size: clamp(4rem, 7vw, 8rem);
   font-weight: 690;
   letter-spacing: -0.065em;
   line-height: 0.86;
@@ -1861,6 +1861,11 @@ label {
     pointer-events: none;
   }
 }
+
+/* The film is the stable visual surface at every breakpoint. The motion
+   controller decides whether it scrubs or holds on the final frame. */
+.disassembly-video { display: block !important; }
+.disassembly-fallback { display: none !important; }
 
 /* 2026 multipage editorial direction */
 :root { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif; }

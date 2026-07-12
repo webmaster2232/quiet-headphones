@@ -2,7 +2,7 @@ const MOTION_OVERRIDE_KEY = 'form01-motion-override'
 
 export function hasFullMotionOverride() {
   try {
-    return window.localStorage.getItem(MOTION_OVERRIDE_KEY) === 'full'
+    return window.localStorage.getItem(MOTION_OVERRIDE_KEY) !== 'reduced'
   } catch {
     return false
   }
@@ -13,7 +13,11 @@ export function systemPrefersReducedMotion() {
 }
 
 export function shouldReduceMotion() {
-  return systemPrefersReducedMotion() && !hasFullMotionOverride()
+  try {
+    return window.localStorage.getItem(MOTION_OVERRIDE_KEY) === 'reduced'
+  } catch {
+    return false
+  }
 }
 
 export function initializeMotionPreference() {
@@ -22,8 +26,8 @@ export function initializeMotionPreference() {
   try {
     if (requestedMode === 'full') {
       window.localStorage.setItem(MOTION_OVERRIDE_KEY, 'full')
-    } else if (requestedMode === 'system') {
-      window.localStorage.removeItem(MOTION_OVERRIDE_KEY)
+    } else if (requestedMode === 'reduced' || requestedMode === 'system') {
+      window.localStorage.setItem(MOTION_OVERRIDE_KEY, 'reduced')
     }
   } catch {
     // Storage can be unavailable in hardened browsing modes; the system setting
@@ -44,7 +48,7 @@ export function initializeMotionPreference() {
 export function setFullMotionOverride(enabled) {
   try {
     if (enabled) window.localStorage.setItem(MOTION_OVERRIDE_KEY, 'full')
-    else window.localStorage.removeItem(MOTION_OVERRIDE_KEY)
+    else window.localStorage.setItem(MOTION_OVERRIDE_KEY, 'reduced')
   } catch {
     // The reload below will continue with the system preference if storage fails.
   }
