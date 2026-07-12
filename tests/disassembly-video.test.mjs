@@ -15,8 +15,8 @@ test('maps scroll progress to video time and clamps both boundaries', () => {
 })
 
 test('smooths large video-time changes into bounded monotonic frame steps', () => {
-  assert.equal(smoothVideoTime(0, 4), 1 / 24)
-  assert.equal(smoothVideoTime(1, 0), 23 / 24)
+  assert.equal(smoothVideoTime(0, 4), 1 / 30)
+  assert.equal(smoothVideoTime(1, 0), 29 / 30)
   assert.equal(smoothVideoTime(1.99, 2), 2)
   assert.equal(smoothVideoTime(2, 2), 2)
 })

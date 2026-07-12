@@ -53,3 +53,19 @@ test('small wheel increments produce monotonic, bounded video-frame movement', a
   expect(Math.max(...deltas)).toBeLessThan(0.2)
   expect(samples.at(-1)).toBeGreaterThan(samples[0] + 0.4)
 })
+
+test('disassembly begins from a clean assembled product before revealing layers', async ({ page }) => {
+  await page.goto('/design')
+  const cover = page.locator('.disassembly-cover')
+  await page.locator('#object').evaluate((section) => window.scrollTo(0, section.offsetTop + 20))
+  await page.waitForTimeout(350)
+  await expect(cover).toBeVisible()
+  const startOpacity = Number(await cover.evaluate((node) => getComputedStyle(node).opacity))
+
+  await page.mouse.wheel(0, 1800)
+  await page.waitForTimeout(900)
+  const separatedOpacity = Number(await cover.evaluate((node) => getComputedStyle(node).opacity))
+
+  expect(startOpacity).toBeGreaterThan(0.9)
+  expect(separatedOpacity).toBeLessThan(0.2)
+})

@@ -589,6 +589,19 @@ label {
   position: relative;
 }
 
+.disassembly-cover {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 1.4rem 1.8rem rgba(16, 17, 16, 0.1));
+  pointer-events: none;
+  will-change: opacity;
+  transform: scale(1.42);
+}
+
 .disassembly-video {
   position: relative;
   z-index: 1;
@@ -1794,6 +1807,52 @@ label {
   .reservation-success h2 {
     font-size: 3.2rem;
   }
+}
+
+/* Clean editorial treatment for the disassembly chapter. */
+.object-stage::before { right: 4vw; left: 4vw; }
+.chapter-label { left: 4vw; }
+.object-heading {
+  top: calc(var(--header-height) + 4.6rem);
+  left: 4vw;
+  max-width: 48rem;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(3rem, 5.4vw, 5.8rem);
+  font-weight: 540;
+  line-height: .94;
+  letter-spacing: -.065em;
+  text-transform: none;
+}
+.object-product-wrap {
+  top: 25%;
+  width: min(86vw, 1280px);
+  height: 60%;
+}
+.object-callouts {
+  inset: auto 4vw 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.5rem, 4vw, 5rem);
+}
+.object-callout,
+.callout--frame,
+.callout--seal,
+.callout--band {
+  position: relative;
+  inset: auto;
+  width: auto;
+  max-width: 18rem;
+}
+.object-callout::before,
+.object-callout::after { display: none; }
+.object-callout h3 { font-size: .92rem; font-weight: 550; text-transform: none; }
+.object-callout p { max-width: 15rem; color: #74756f; font-size: .62rem; line-height: 1.45; }
+.object-callout__rule { opacity: .4; }
+
+@media (max-width: 799px) {
+  .object-heading { top: 7.8rem; font-size: clamp(3rem, 14vw, 4.6rem); }
+  .object-product-wrap { top: 17rem; width: 110vw; height: 43vh; }
+  .object-callouts { inset: auto 1.25rem 2rem; grid-template-columns: 1fr; gap: 1.4rem; }
 }
 
 @media (min-width: 800px) and (max-width: 1180px) {

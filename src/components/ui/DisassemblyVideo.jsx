@@ -3,6 +3,7 @@ import { progressToVideoTime, smoothVideoTime } from '../../lib/disassemblyVideo
 
 const DisassemblyVideo = forwardRef(function DisassemblyVideo(_, forwardedRef) {
   const videoRef = useRef(null)
+  const coverRef = useRef(null)
   const progressRef = useRef(0)
   const durationRef = useRef(4)
   const frameRef = useRef(0)
@@ -27,7 +28,14 @@ const DisassemblyVideo = forwardRef(function DisassemblyVideo(_, forwardedRef) {
     forwardedRef,
     () => ({
       setProgress(progress) {
-        progressRef.current = progress
+        const clamped = Math.min(1, Math.max(0, progress))
+        progressRef.current = Math.min(1, Math.max(0, (clamped - 0.08) / 0.92))
+        if (coverRef.current) {
+          const reveal = Math.min(1, Math.max(0, (clamped - 0.08) / 0.18))
+          coverRef.current.style.opacity = String(1 - reveal)
+          coverRef.current.style.visibility = reveal === 1 ? 'hidden' : 'visible'
+          if (videoRef.current) videoRef.current.style.opacity = String(reveal)
+        }
         seek()
       },
     }),
@@ -54,6 +62,14 @@ const DisassemblyVideo = forwardRef(function DisassemblyVideo(_, forwardedRef) {
           seek()
           event.currentTarget.classList.add('is-ready')
         }}
+      />
+      <img
+        ref={coverRef}
+        className="disassembly-cover"
+        src="/assets/form01-hero-cutout.png"
+        alt=""
+        width="1586"
+        height="992"
       />
     </div>
   )

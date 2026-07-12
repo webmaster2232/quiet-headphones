@@ -137,10 +137,6 @@ export default function ObjectStudy() {
           ))}
         </div>
 
-        <p className="object-orbit mono">Scrub to separate</p>
-        <div className="object-vertical-word" aria-hidden="true">
-          Form
-        </div>
       </div>
     </section>
   )

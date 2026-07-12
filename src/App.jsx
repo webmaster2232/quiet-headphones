@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import CustomCursor from './components/CustomCursor.jsx'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Header from './components/Header.jsx'
 import MotionPreference from './components/MotionPreference.jsx'
@@ -16,7 +15,6 @@ export default function App() {
 
   return (
     <BrowserRouter><SmoothScroll>
-      <CustomCursor />
       <MotionPreference />
       <Header onReserve={() => setReservationOpen(true)} />
       <PageTransition><Routes>

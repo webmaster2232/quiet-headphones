@@ -4,7 +4,7 @@ export function progressToVideoTime(progress, duration) {
   return Math.min(1, Math.max(0, safeProgress)) * safeDuration
 }
 
-export function smoothVideoTime(currentTime, targetTime, maxStep = 1 / 24) {
+export function smoothVideoTime(currentTime, targetTime, maxStep = 1 / 30) {
   const current = Number.isFinite(currentTime) ? currentTime : 0
   const target = Number.isFinite(targetTime) ? targetTime : current
   const delta = target - current
