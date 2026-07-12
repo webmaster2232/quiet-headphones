@@ -73,7 +73,7 @@ export default function ObjectStudy() {
               start: 'top top',
               end: '+=320%',
               pin: stageRef.current,
-              scrub: 0.6,
+              scrub: true,
               anticipatePin: 1,
               invalidateOnRefresh: true,
             },

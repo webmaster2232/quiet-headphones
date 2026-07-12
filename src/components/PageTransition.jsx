@@ -17,8 +17,7 @@ export default function PageTransition({ children }) {
       .set(overlayRef.current, { autoAlpha: 1, clipPath: 'inset(0 0 0 0)' })
       .fromTo('.page-loader__line', { scaleX: 0 }, { scaleX: 1, duration: 0.42, ease: 'power3.inOut' })
       .to(overlayRef.current, { clipPath: 'inset(0 0 100% 0)', duration: 0.72, ease: 'power4.inOut' })
-      .fromTo(pageRef.current, { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: 'power3.out' }, 0.38)
-      .set(pageRef.current, { clearProps: 'transform' })
+      .fromTo(pageRef.current, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.62, ease: 'power2.out' }, 0.48)
       .set(overlayRef.current, { autoAlpha: 0 })
 
     gsap.utils.toArray('.editorial-intro h2, .chapter-outro h2, .listening-modes h2', pageRef.current).forEach((heading) => {

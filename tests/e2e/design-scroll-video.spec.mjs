@@ -33,3 +33,23 @@ test('mobile design page keeps a visible product film surface', async ({ page })
   await expect(page.locator('.disassembly-video')).toBeVisible()
   await expect(page.locator('.disassembly-video')).toHaveJSProperty('readyState', 4)
 })
+
+test('small wheel increments produce monotonic, bounded video-frame movement', async ({ page }) => {
+  await page.goto('/design')
+  const video = page.locator('.disassembly-video')
+  await expect.poll(() => video.evaluate((node) => node.readyState)).toBeGreaterThanOrEqual(2)
+  await page.locator('#object').evaluate((section) => window.scrollTo(0, section.offsetTop + 250))
+  await page.waitForTimeout(500)
+
+  const samples = []
+  for (let index = 0; index < 18; index += 1) {
+    await page.mouse.wheel(0, 80)
+    await page.waitForTimeout(70)
+    samples.push(await video.evaluate((node) => node.currentTime))
+  }
+
+  const deltas = samples.slice(1).map((time, index) => time - samples[index])
+  expect(Math.min(...deltas)).toBeGreaterThanOrEqual(-0.02)
+  expect(Math.max(...deltas)).toBeLessThan(0.2)
+  expect(samples.at(-1)).toBeGreaterThan(samples[0] + 0.4)
+})
